@@ -1,25 +1,116 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6211" systemVersion="14A298i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="14F1605" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6204"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location Services iOs 9 Test" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9IH-4b-1Lb">
+                                <rect key="frame" x="79" y="20" width="217" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5gb-0v-NVX">
+                                <rect key="frame" x="48" y="68" width="114" height="30"/>
+                                <state key="normal" title="Permisos In-Use"/>
+                                <connections>
+                                    <action selector="askPermissionInUse:" destination="BYZ-38-t0r" eventType="touchUpInside" id="9jh-gp-0SI"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kN2-b4-MkE">
+                                <rect key="frame" x="213" y="68" width="115" height="30"/>
+                                <state key="normal" title="Permisos Always"/>
+                                <connections>
+                                    <action selector="askPermissionAlways:" destination="BYZ-38-t0r" eventType="touchUpInside" id="hjx-3c-36T"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="u4F-AA-R6M">
+                                <rect key="frame" x="48" y="106" width="114" height="30"/>
+                                <state key="normal" title="Localiza 1 Vez"/>
+                                <connections>
+                                    <action selector="localizeOnce:" destination="BYZ-38-t0r" eventType="touchUpInside" id="aF8-Cv-prP"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="J19-qI-Rzi">
+                                <rect key="frame" x="206" y="106" width="122" height="30"/>
+                                <state key="normal" title="Localiza Continua"/>
+                                <connections>
+                                    <action selector="localizeAllTime:" destination="BYZ-38-t0r" eventType="touchUpInside" id="8xb-V8-qyR"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Servicio Habilitado:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vgD-6V-ypu">
+                                <rect key="frame" x="48" y="49" width="148" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Nga-Ch-nMq">
+                                <rect key="frame" x="48" y="617" width="280" height="30"/>
+                                <state key="normal" title="Ver Artículo en www.na8.com.ar"/>
+                                <connections>
+                                    <action selector="gotoWeb:" destination="BYZ-38-t0r" eventType="touchUpInside" id="BPT-Ur-2Sr"/>
+                                </connections>
+                            </button>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="wEb-28-oMw">
+                                <rect key="frame" x="0.0" y="154" width="375" height="455"/>
+                            </mapView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SI - NO" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M2G-Ra-Swc">
+                                <rect key="frame" x="204" y="49" width="56" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="Nga-Ch-nMq" secondAttribute="bottom" constant="20" symbolic="YES" id="4aD-Jo-not"/>
+                            <constraint firstItem="5gb-0v-NVX" firstAttribute="baseline" secondItem="kN2-b4-MkE" secondAttribute="baseline" id="HYz-xY-MDL"/>
+                            <constraint firstItem="wEb-28-oMw" firstAttribute="centerX" secondItem="Nga-Ch-nMq" secondAttribute="centerX" id="JxZ-xb-ZQ5"/>
+                            <constraint firstItem="J19-qI-Rzi" firstAttribute="leading" secondItem="u4F-AA-R6M" secondAttribute="trailing" constant="44" id="Nlm-wg-jhG"/>
+                            <constraint firstItem="J19-qI-Rzi" firstAttribute="baseline" secondItem="u4F-AA-R6M" secondAttribute="baseline" id="T61-UV-8bV"/>
+                            <constraint firstItem="u4F-AA-R6M" firstAttribute="top" secondItem="5gb-0v-NVX" secondAttribute="bottom" constant="8" symbolic="YES" id="Yfd-Ke-HCO"/>
+                            <constraint firstItem="wEb-28-oMw" firstAttribute="top" secondItem="vgD-6V-ypu" secondAttribute="bottom" constant="84" id="ZwP-sW-ex9"/>
+                            <constraint firstItem="u4F-AA-R6M" firstAttribute="trailing" secondItem="5gb-0v-NVX" secondAttribute="trailing" id="am9-8c-2er"/>
+                            <constraint firstItem="Nga-Ch-nMq" firstAttribute="top" secondItem="wEb-28-oMw" secondAttribute="bottom" constant="8" symbolic="YES" id="c7o-pt-EKp"/>
+                            <constraint firstItem="J19-qI-Rzi" firstAttribute="trailing" secondItem="Nga-Ch-nMq" secondAttribute="trailing" id="eVU-fD-fIM"/>
+                            <constraint firstItem="9IH-4b-1Lb" firstAttribute="centerX" secondItem="wEb-28-oMw" secondAttribute="centerX" id="lYk-pl-D03"/>
+                            <constraint firstItem="M2G-Ra-Swc" firstAttribute="baseline" secondItem="vgD-6V-ypu" secondAttribute="baseline" id="lZq-ii-haC"/>
+                            <constraint firstItem="kN2-b4-MkE" firstAttribute="trailing" secondItem="J19-qI-Rzi" secondAttribute="trailing" id="m8F-gY-7Z0"/>
+                            <constraint firstItem="9IH-4b-1Lb" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="mGW-pM-Ipb"/>
+                            <constraint firstItem="vgD-6V-ypu" firstAttribute="leading" secondItem="Nga-Ch-nMq" secondAttribute="leading" id="mlw-b5-Mrh"/>
+                            <constraint firstItem="wEb-28-oMw" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="mwe-bC-CGm"/>
+                            <constraint firstItem="M2G-Ra-Swc" firstAttribute="leading" secondItem="vgD-6V-ypu" secondAttribute="trailing" constant="8" symbolic="YES" id="oR7-u3-AoL"/>
+                            <constraint firstItem="5gb-0v-NVX" firstAttribute="top" secondItem="9IH-4b-1Lb" secondAttribute="bottom" constant="27" id="r7u-0c-3Y0"/>
+                            <constraint firstItem="u4F-AA-R6M" firstAttribute="leading" secondItem="vgD-6V-ypu" secondAttribute="leading" id="sra-9M-1fk"/>
+                            <constraint firstAttribute="trailing" secondItem="wEb-28-oMw" secondAttribute="trailing" id="wwA-Db-vJH"/>
+                            <constraint firstItem="vgD-6V-ypu" firstAttribute="top" secondItem="u4F-AA-R6M" secondAttribute="bottom" constant="-87" id="yV0-pq-1wZ"/>
+                            <constraint firstItem="u4F-AA-R6M" firstAttribute="leading" secondItem="5gb-0v-NVX" secondAttribute="leading" id="zai-gW-obA"/>
+                        </constraints>
                     </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+                    <connections>
+                        <outlet property="askPermissionAlways" destination="kN2-b4-MkE" id="HkR-JI-TDc"/>
+                        <outlet property="lblServiceAvailable" destination="M2G-Ra-Swc" id="oed-Gv-QRp"/>
+                        <outlet property="localizeOnce" destination="u4F-AA-R6M" id="zd0-QR-9RI"/>
+                        <outlet property="mapview" destination="wEb-28-oMw" id="T1b-HN-5ps"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="510" y="337"/>
         </scene>
     </scenes>
 </document>

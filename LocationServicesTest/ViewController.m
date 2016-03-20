@@ -24,4 +24,17 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (IBAction)askPermissionInUse:(id)sender {
+}
+
+- (IBAction)askPermissionAlways:(id)sender {
+}
+
+- (IBAction)localizeOnce:(id)sender {
+}
+
+- (IBAction)localizeAllTime:(id)sender {
+}
+- (IBAction)gotoWeb:(id)sender {
+}
 @end
