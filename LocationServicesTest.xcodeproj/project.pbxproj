@@ -15,6 +15,9 @@
 		4E471CDB1C9F4EB500B9D821 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4E471CD91C9F4EB500B9D821 /* Main.storyboard */; };
 		4E471CDD1C9F4EB500B9D821 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4E471CDC1C9F4EB500B9D821 /* Assets.xcassets */; };
 		4E471CE01C9F4EB500B9D821 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4E471CDE1C9F4EB500B9D821 /* LaunchScreen.storyboard */; };
+		4EC735051C9FF5B400936EC8 /* LocationTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC734FF1C9FF5B400936EC8 /* LocationTracker.m */; };
+		4EC735061C9FF5B400936EC8 /* BackgroundTaskManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC735011C9FF5B400936EC8 /* BackgroundTaskManager.m */; };
+		4EC735071C9FF5B400936EC8 /* LocationShareModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC735031C9FF5B400936EC8 /* LocationShareModel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +33,12 @@
 		4E471CDC1C9F4EB500B9D821 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4E471CDF1C9F4EB500B9D821 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4E471CE11C9F4EB500B9D821 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4EC734FF1C9FF5B400936EC8 /* LocationTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationTracker.m; sourceTree = "<group>"; };
+		4EC735001C9FF5B400936EC8 /* BackgroundTaskManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackgroundTaskManager.h; sourceTree = "<group>"; };
+		4EC735011C9FF5B400936EC8 /* BackgroundTaskManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BackgroundTaskManager.m; sourceTree = "<group>"; };
+		4EC735021C9FF5B400936EC8 /* LocationShareModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationShareModel.h; sourceTree = "<group>"; };
+		4EC735031C9FF5B400936EC8 /* LocationShareModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationShareModel.m; sourceTree = "<group>"; };
+		4EC735041C9FF5B400936EC8 /* LocationTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationTracker.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +75,7 @@
 		4E471CCF1C9F4EB400B9D821 /* LocationServicesTest */ = {
 			isa = PBXGroup;
 			children = (
+				4EC734FE1C9FF59500936EC8 /* Location Utils */,
 				4E471CD31C9F4EB500B9D821 /* AppDelegate.h */,
 				4E471CD41C9F4EB500B9D821 /* AppDelegate.m */,
 				4E471CD61C9F4EB500B9D821 /* ViewController.h */,
@@ -85,6 +95,19 @@
 				4E471CD11C9F4EB500B9D821 /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		4EC734FE1C9FF59500936EC8 /* Location Utils */ = {
+			isa = PBXGroup;
+			children = (
+				4EC734FF1C9FF5B400936EC8 /* LocationTracker.m */,
+				4EC735001C9FF5B400936EC8 /* BackgroundTaskManager.h */,
+				4EC735011C9FF5B400936EC8 /* BackgroundTaskManager.m */,
+				4EC735021C9FF5B400936EC8 /* LocationShareModel.h */,
+				4EC735031C9FF5B400936EC8 /* LocationShareModel.m */,
+				4EC735041C9FF5B400936EC8 /* LocationTracker.h */,
+			);
+			name = "Location Utils";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -162,7 +185,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4EC735061C9FF5B400936EC8 /* BackgroundTaskManager.m in Sources */,
 				4E471CD81C9F4EB500B9D821 /* ViewController.m in Sources */,
+				4EC735071C9FF5B400936EC8 /* LocationShareModel.m in Sources */,
+				4EC735051C9FF5B400936EC8 /* LocationTracker.m in Sources */,
 				4E471CD51C9F4EB500B9D821 /* AppDelegate.m in Sources */,
 				4E471CD21C9F4EB500B9D821 /* main.m in Sources */,
 			);
