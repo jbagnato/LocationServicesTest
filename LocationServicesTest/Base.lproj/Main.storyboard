@@ -102,9 +102,7 @@
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
-                        <outlet property="askPermissionAlways" destination="kN2-b4-MkE" id="HkR-JI-TDc"/>
                         <outlet property="lblServiceAvailable" destination="M2G-Ra-Swc" id="oed-Gv-QRp"/>
-                        <outlet property="localizeOnce" destination="u4F-AA-R6M" id="zd0-QR-9RI"/>
                         <outlet property="mapview" destination="wEb-28-oMw" id="T1b-HN-5ps"/>
                     </connections>
                 </viewController>

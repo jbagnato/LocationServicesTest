@@ -100,12 +100,12 @@
 		4EC734FE1C9FF59500936EC8 /* Location Utils */ = {
 			isa = PBXGroup;
 			children = (
-				4EC734FF1C9FF5B400936EC8 /* LocationTracker.m */,
 				4EC735001C9FF5B400936EC8 /* BackgroundTaskManager.h */,
 				4EC735011C9FF5B400936EC8 /* BackgroundTaskManager.m */,
 				4EC735021C9FF5B400936EC8 /* LocationShareModel.h */,
 				4EC735031C9FF5B400936EC8 /* LocationShareModel.m */,
 				4EC735041C9FF5B400936EC8 /* LocationTracker.h */,
+				4EC734FF1C9FF5B400936EC8 /* LocationTracker.m */,
 			);
 			name = "Location Utils";
 			sourceTree = "<group>";

@@ -10,8 +10,18 @@
 #import <CoreLocation/CoreLocation.h>
 #import <MapKit/MapKit.h>
 #import <MapKit/MKAnnotation.h>
+#import "LocationShareModel.h"
 
-@interface ViewController : UIViewController<MKMapViewDelegate,  CLLocationManagerDelegate>
+
+@interface ViewController : UIViewController<MKMapViewDelegate,  CLLocationManagerDelegate>{
+    NSTimer * timer;
+}
+
++ (CLLocationManager*) locationManager;
++ (CLLocation *) lastLocation;
+@property(strong, nonatomic)NSTimer * timer;
+@property (strong,nonatomic) LocationShareModel * shareModel;
+
 
 @property (weak, nonatomic) IBOutlet UILabel *lblServiceAvailable;
 - (IBAction)askPermissionInUse:(id)sender;
