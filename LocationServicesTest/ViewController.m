@@ -15,7 +15,6 @@
 @end
 
 @implementation ViewController
-@synthesize timer;//,lastLocation
 
 static bool pedirBackground =false;
 
@@ -23,40 +22,8 @@ static bool pedirBackground =false;
     
     self = [super initWithCoder:aDecoder];
     
-    if (self) {
-        self.shareModel = [LocationShareModel sharedModel];
-    }
-    
     return self;
 }
-
-+ (CLLocationManager *)locationManager {
-    static CLLocationManager *fooLocationManager = nil;
-    if (fooLocationManager == nil) {
-        fooLocationManager = [[CLLocationManager alloc] init];
-        fooLocationManager.distanceFilter = kCLDistanceFilterNone; //whenever we move
-        fooLocationManager.desiredAccuracy = kCLLocationAccuracyBest;
-        fooLocationManager.headingFilter = kCLHeadingFilterNone;
-    }
-    return fooLocationManager;
-}
-static CLLocation *foolastLocation = Nil;
-+ (CLLocation *)lastLocation {
-    if (foolastLocation == Nil) {
-        //foolastLocation = ;
-    }
-    return foolastLocation;
-}
-+ (void)setLastLocation:(CLLocation *)num {
-    if(foolastLocation && !num){
-        
-    }else{
-        foolastLocation = num;
-        
-    }
-}
-
-
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -64,9 +31,9 @@ static CLLocation *foolastLocation = Nil;
     
     pedirBackground=false;
 
-    self.mapview.delegate = self;
+    //self.mapview.delegate = self;
     
-    [ViewController locationManager].delegate = self; //solo este vc sera el delegate del gps
+    //[LocationTracker sharedLocationManager].delegate = self; //solo este vc sera el delegate del gps
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(didChangeAuthorizationStatusOn) name:@"didChangeAuthorizationStatusOn" object:nil];
@@ -81,7 +48,7 @@ static CLLocation *foolastLocation = Nil;
         [self gpsStartLocating:FALSE];
     }*/
     
-    self.mapview.showsUserLocation = YES;
+    //self.mapview.showsUserLocation = YES;
     [self.mapview setMapType:MKMapTypeStandard];
     [self.mapview setZoomEnabled:YES];
     [self.mapview setScrollEnabled:YES];
@@ -136,8 +103,9 @@ static CLLocation *foolastLocation = Nil;
         
     } else{
         
-        /*self.locationTracker = [[LocationTracker alloc]init];
-         [self.locationTracker startLocationTracking];
+        self.locationTracker = [[LocationTracker alloc]init];
+        [self.locationTracker startLocationTracking];
+        /*
          
          //Send the best location to server every 60 seconds
          //You may adjust the time interval depends on the need of your app.
@@ -148,11 +116,13 @@ static CLLocation *foolastLocation = Nil;
          selector:@selector(updateLocation)
          userInfo:nil
          repeats:YES];*/
+        /*
         @try {
             [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:Nil];
         } @catch (NSException *__unused exception) {}
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationEnterBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
+         */
     }
 }
 
@@ -179,15 +149,15 @@ static CLLocation *foolastLocation = Nil;
     }
     
     if([CLLocationManager locationServicesEnabled] && [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways){
-        //[self solicitarServicioBackground];
-    }else if ([[ViewController locationManager] respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+        
+    }else if ([[LocationTracker sharedLocationManager] respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
         if(alwaysUse){
             //ATENCION aqui se da el caso que el user ya haya solicitado el permiso ALWAYS pero no lo habilito la 1ra vez. Entonces debera ir manualmente
             int veces = [self aumentaAlwaysAuth];
             if(veces<=0){
-                [[ViewController locationManager] requestAlwaysAuthorization];
+                [[LocationTracker sharedLocationManager] requestAlwaysAuthorization];
                 if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 9) {
-                    [ViewController locationManager].allowsBackgroundLocationUpdates = YES;
+                    [LocationTracker sharedLocationManager].allowsBackgroundLocationUpdates = YES;
                 }
             }else{
                 UIAlertView *servicesDisabledAlert = [[UIAlertView alloc] initWithTitle:@"Localización" message:@"Por favor, dirígete a Ajustes > App y permite Localización Siempre para activar el Modo Viaje" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
@@ -196,7 +166,7 @@ static CLLocation *foolastLocation = Nil;
             }
             
         }else{
-            [[ViewController locationManager] requestWhenInUseAuthorization];
+            [[LocationTracker sharedLocationManager] requestWhenInUseAuthorization];
         }
     } else {
         // iOS 7 - We can't use requestWhenInUseAuthorization -- we'll get an unknown selector crash!
@@ -206,17 +176,18 @@ static CLLocation *foolastLocation = Nil;
     }
     
     [self solicitarServicioBackground];
-    
+    /*
     if(self.timer){
         [self.timer invalidate];
     }
     self.timer = [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(_turnOnLocationManager)  userInfo:nil repeats:NO];
     //self.shareModel.timer = self.timer;
-    [[ViewController locationManager] startUpdatingLocation];
+    [[LocationTracker sharedLocationManager] startUpdatingLocation];
+     */
 }
 
 -(void) gpsStopLocating{
-    [[ViewController locationManager] stopUpdatingLocation];
+    [[LocationTracker sharedLocationManager] stopUpdatingLocation];
 }
 
 /*
@@ -257,7 +228,7 @@ static CLLocation *foolastLocation = Nil;
     //[[NSUserDefaults standardUserDefaults] synchronize];
     //}
 }
-
+/*
 // Location Manager Delegate Methods
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
@@ -287,10 +258,10 @@ static CLLocation *foolastLocation = Nil;
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"didUpdateLocations" object:[ViewController lastLocation]];
     
-    /* Schedule location manager to run again in 60 seconds
-     [manager stopUpdatingLocation];
-     self.timer = [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(_turnOnLocationManager)  userInfo:nil repeats:NO];
-     */
+    // Schedule location manager to run again in 60 seconds
+    // [manager stopUpdatingLocation];
+    // self.timer = [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(_turnOnLocationManager)  userInfo:nil repeats:NO];
+    
     
     //If the timer still valid, it means the 60 seconds are not yet over, and any other
     // process shouldn’t be started, so return the method here (Will not run the code below)
@@ -323,15 +294,16 @@ static CLLocation *foolastLocation = Nil;
                                                                      repeats:NO];
     
 }
-
+*/
+/*
 - (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation
 {
     MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, 800, 800);
     [self.mapview setRegion:[self.mapview regionThatFits:region] animated:YES];
 }
-
+*/
 - (void)_turnOnLocationManager {
-    [[ViewController locationManager] startUpdatingLocation];
+    [[LocationTracker sharedLocationManager] startUpdatingLocation];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error{
@@ -350,11 +322,17 @@ static CLLocation *foolastLocation = Nil;
 
 
 - (void) didUpdateLocations : (NSNotification *) notification {
-    //CLLocation *location =  (CLLocation *)[notification object];
-    //NSLog(@"%@",location);
+    CLLocation *location =  (CLLocation *)[notification object];
+    NSLog(@"%@",location);
+    MKCoordinateRegion region = { { 0.0, 0.0 }, { 0.0, 0.0 } };
+    region.center.latitude = location.coordinate.latitude;
+    region.center.longitude = location.coordinate.longitude;
+    region.span.longitudeDelta = 0.005f;
+    region.span.longitudeDelta = 0.005f;
+    [self.mapview setRegion:region animated:YES];
 }
 
-
+/*
 // This Method will be called as soon as the app goes into the background
 // (Which is done through the "[NSNotificationCenter defaultCenter] addObserver" method with the key
 // "UIApplicationDidEnterBackgroundNotification
@@ -449,7 +427,7 @@ static CLLocation *foolastLocation = Nil;
     CLLocationManager *locationManager = [ViewController locationManager];//[LocationTracker sharedLocationManager];
     [locationManager stopUpdatingLocation];
 }
-
+*/
 -(void)didChangeAuthorizationStatusOn{
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     [prefs setObject:@"activo" forKey:@"activaGps"];

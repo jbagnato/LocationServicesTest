@@ -182,6 +182,7 @@
             
             self.myLastLocation = theLocation;
             self.myLastLocationAccuracy= theAccuracy;
+            self.lastLocation =newLocation;
             
             NSMutableDictionary * dict = [[NSMutableDictionary alloc]init];
             [dict setObject:[NSNumber numberWithFloat:theLocation.latitude] forKey:@"latitude"];
@@ -193,7 +194,9 @@
             [self.shareModel.myLocationArray addObject:dict];
         }
     }
-         
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"didUpdateLocations" object:self.lastLocation];
+
          //If the timer still valid, it means the 60 seconds are not yet over, and any other
          // process shouldn’t be started, so return the method here (Will not run the code below)
          if (self.shareModel.timer)

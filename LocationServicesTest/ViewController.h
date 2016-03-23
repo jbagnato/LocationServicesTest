@@ -7,20 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <CoreLocation/CoreLocation.h>
 #import <MapKit/MapKit.h>
 #import <MapKit/MKAnnotation.h>
-#import "LocationShareModel.h"
+#import "LocationTracker.h"
 
 
-@interface ViewController : UIViewController<MKMapViewDelegate,  CLLocationManagerDelegate>{
-    NSTimer * timer;
+@interface ViewController : UIViewController{//<MKMapViewDelegate>
 }
 
-+ (CLLocationManager*) locationManager;
-+ (CLLocation *) lastLocation;
-@property(strong, nonatomic)NSTimer * timer;
-@property (strong,nonatomic) LocationShareModel * shareModel;
+@property (strong,nonatomic) LocationTracker * locationTracker;
 
 
 @property (weak, nonatomic) IBOutlet UILabel *lblServiceAvailable;

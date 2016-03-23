@@ -15,6 +15,7 @@
 
 @property (nonatomic) CLLocationCoordinate2D myLastLocation;
 @property (nonatomic) CLLocationAccuracy myLastLocationAccuracy;
+@property (nonatomic) CLLocation*lastLocation;
 
 @property (strong,nonatomic) LocationShareModel * shareModel;
 
