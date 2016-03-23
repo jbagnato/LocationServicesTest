@@ -12,7 +12,7 @@
 #import "LocationTracker.h"
 
 
-@interface ViewController : UIViewController{//<MKMapViewDelegate>
+@interface ViewController : UIViewController{
 }
 
 @property (strong,nonatomic) LocationTracker * locationTracker;

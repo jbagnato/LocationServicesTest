@@ -15,6 +15,7 @@
 
 
 @implementation LocationTracker
+static bool pedirBackground =false;
 
 + (CLLocationManager *)sharedLocationManager {
     static CLLocationManager *_locationManager;
@@ -35,6 +36,10 @@
         self.shareModel = [LocationShareModel sharedModel];
         self.shareModel.myLocationArray = [[NSMutableArray alloc]init];
         
+        pedirBackground=false;
+        @try {
+            [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:Nil];
+        } @catch (NSException *__unused exception) {}
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationEnterBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
     }
     return self;
@@ -47,8 +52,8 @@
     
     if ([CLLocationManager locationServicesEnabled] == NO) {
         NSLog(@"locationServicesEnabled false");
-        UIAlertView *servicesDisabledAlert = [[UIAlertView alloc] initWithTitle:@"Location Services Disabled" message:@"You currently have all location services for this device disabled" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [servicesDisabledAlert show];
+        /*UIAlertView *servicesDisabledAlert = [[UIAlertView alloc] initWithTitle:@"Location Services Disabled" message:@"You currently have all location services for this device disabled" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [servicesDisabledAlert show];*/
     } else {
         CLAuthorizationStatus authorizationStatus= [CLLocationManager authorizationStatus];
         
@@ -134,6 +139,11 @@
 //" in the "name" parameter, should be implemented in the init method).
 -(void)applicationEnterBackground
 {
+    if(pedirBackground){ //para que no entre multiples veces
+        return;
+    }
+    pedirBackground=true;
+
     CLLocationManager *locationManager = [LocationTracker sharedLocationManager];
     locationManager.delegate = self;
     // Any other initializations you see fit
@@ -231,29 +241,11 @@
 
 - (void)locationManager: (CLLocationManager *)manager didFailWithError: (NSError *)error
 {
-    // NSLog(@"locationManager error:%@",error);
+    NSLog(@"locationManager error:%@",error);
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"didFailWithError" object:error];
     
-    switch([error code])
-    {
-        case kCLErrorNetwork: // general, network-related error
-        {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error en la Red" message:@"Por favor, revisa tu conexión a la red." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
-            [alert show];
-        }
-            break;
-        case kCLErrorDenied:{
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Habilita Servicios de Ubicación" message:@"Debes habilitar los servicios de Ubicación. Para hacerlo dirigete a Ajustes->Privacidad->Localización" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
-            [alert show];
-        }
-            break;
-        default:
-        {
-            
-        }
-            break;
-    }
 }
-
+/*
 //Send the location to Server
 - (void)updateLocationToServer {
     
@@ -301,5 +293,5 @@
     self.shareModel.myLocationArray = nil;
     self.shareModel.myLocationArray = [[NSMutableArray alloc]init];
 }
-
+*/
 @end

@@ -16,7 +16,6 @@
 
 @implementation ViewController
 
-static bool pedirBackground =false;
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
     
@@ -27,26 +26,16 @@ static bool pedirBackground =false;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
     
-    pedirBackground=false;
 
-    //self.mapview.delegate = self;
-    
-    //[LocationTracker sharedLocationManager].delegate = self; //solo este vc sera el delegate del gps
-    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(didChangeAuthorizationStatusOn) name:@"didChangeAuthorizationStatusOn" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(didChangeAuthorizationStatusOff) name:@"didChangeAuthorizationStatusOff" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(didUpdateLocations:) name:@"didUpdateLocations" object:nil];
-    
-    /*NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    NSString * estado = [prefs objectForKey:@"activaGps"];
-    if(!estado || ![estado isEqualToString:@"activo"]){
-        [self gpsStartLocating:FALSE];
-    }*/
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didFailWithError:) name:@"didFailWithError" object:nil];
     
     //self.mapview.showsUserLocation = YES;
     [self.mapview setMapType:MKMapTypeStandard];
@@ -81,48 +70,45 @@ static bool pedirBackground =false;
 }
 
 - (void)solicitarServicioBackground {
-    UIAlertView * alert;
+    UIAlertController * alert;
     //We have to make sure that the Background App Refresh is enable for the Location updates to work in the background.
     if([[UIApplication sharedApplication] backgroundRefreshStatus] == UIBackgroundRefreshStatusDenied){
         
-        alert = [[UIAlertView alloc]initWithTitle:@""
+        alert = [UIAlertController
+                 alertControllerWithTitle:@"Localización"
                                           message:@"La app no funcionará bien si no habilitas Actualizar en segundo Plano. Activalos en Ajustes > General > Actualizar en segundo Plano"
-                                         delegate:nil
-                                cancelButtonTitle:@"Ok"
-                                otherButtonTitles:nil, nil];
-        [alert show];
+                 preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction* yesButton = [UIAlertAction
+                                    actionWithTitle:@"Ok"
+                                    style:UIAlertActionStyleDefault
+                                    handler:^(UIAlertAction * action)
+                                    {
+                                        //Handle your yes please button action here
+                                    }];
+        [alert addAction:yesButton];
+        [self presentViewController:alert animated:YES completion:nil];
         
     }else if([[UIApplication sharedApplication] backgroundRefreshStatus] == UIBackgroundRefreshStatusRestricted){
         
-        alert = [[UIAlertView alloc]initWithTitle:@""
+        alert = [UIAlertController
+                 alertControllerWithTitle:@"Localización"
                                           message:@"Las funciones de la App están limitados por tener Actualizar en segundo Plano deshabilitado."
-                                         delegate:nil
-                                cancelButtonTitle:@"Ok"
-                                otherButtonTitles:nil, nil];
-        [alert show];
+                 preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction* yesButton = [UIAlertAction
+                                    actionWithTitle:@"OK"
+                                    style:UIAlertActionStyleDefault
+                                    handler:^(UIAlertAction * action)
+                                    {
+                                        //Handle your yes please button action here
+                                    }];
+        [alert addAction:yesButton];
+        [self presentViewController:alert animated:YES completion:nil];
         
     } else{
         
         self.locationTracker = [[LocationTracker alloc]init];
         [self.locationTracker startLocationTracking];
-        /*
-         
-         //Send the best location to server every 60 seconds
-         //You may adjust the time interval depends on the need of your app.
-         NSTimeInterval time = 60.0;
-         self.locationUpdateTimer =
-         [NSTimer scheduledTimerWithTimeInterval:time
-         target:self
-         selector:@selector(updateLocation)
-         userInfo:nil
-         repeats:YES];*/
-        /*
-        @try {
-            [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:Nil];
-        } @catch (NSException *__unused exception) {}
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationEnterBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
-         */
     }
 }
 
@@ -137,14 +123,23 @@ static bool pedirBackground =false;
     }else{
         return 0;
     }
-    
 }
 
 -(void) gpsStartLocating:(BOOL) alwaysUse {
     
     if(![CLLocationManager locationServicesEnabled] || [CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied){
-        UIAlertView *servicesDisabledAlert = [[UIAlertView alloc] initWithTitle:@"Error en Localización" message:@"Por favor, dirígete a Ajuste > Privacidad > Localización y habilita los servicios de ubicación." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [servicesDisabledAlert show];
+        UIAlertController *servicesDisabledAlert = [UIAlertController
+                                                    alertControllerWithTitle:@"Error en Localización" message:@"Por favor, dirígete a Ajuste > Privacidad > Localización y habilita los servicios de ubicación."
+                                                    preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction* yesButton = [UIAlertAction
+                                    actionWithTitle:@"Ok"
+                                    style:UIAlertActionStyleDefault
+                                    handler:^(UIAlertAction * action)
+                                    {
+                                        //Handel your yes please button action here
+                                    }];
+        [servicesDisabledAlert addAction:yesButton];
+        [self presentViewController:servicesDisabledAlert animated:YES completion:nil];
         return;
     }
     
@@ -160,8 +155,17 @@ static bool pedirBackground =false;
                     [LocationTracker sharedLocationManager].allowsBackgroundLocationUpdates = YES;
                 }
             }else{
-                UIAlertView *servicesDisabledAlert = [[UIAlertView alloc] initWithTitle:@"Localización" message:@"Por favor, dirígete a Ajustes > App y permite Localización Siempre para activar el Modo Viaje" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                [servicesDisabledAlert show];
+                UIAlertController *servicesDisabledAlert = [UIAlertController
+                                                            alertControllerWithTitle:@"Localización" message:@"Por favor, dirígete a Ajustes > App y permite Localización Siempre" preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction* yesButton = [UIAlertAction
+                                            actionWithTitle:@"Ok"
+                                            style:UIAlertActionStyleDefault
+                                            handler:^(UIAlertAction * action)
+                                            {
+                                                //Handel your yes please button action here
+                                            }];
+                [servicesDisabledAlert addAction:yesButton];
+                [self presentViewController:servicesDisabledAlert animated:YES completion:nil];
                 return;
             }
             
@@ -176,18 +180,10 @@ static bool pedirBackground =false;
     }
     
     [self solicitarServicioBackground];
-    /*
-    if(self.timer){
-        [self.timer invalidate];
-    }
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(_turnOnLocationManager)  userInfo:nil repeats:NO];
-    //self.shareModel.timer = self.timer;
-    [[LocationTracker sharedLocationManager] startUpdatingLocation];
-     */
 }
 
 -(void) gpsStopLocating{
-    [[LocationTracker sharedLocationManager] stopUpdatingLocation];
+    [self.locationTracker stopLocationTracking];
 }
 
 /*
@@ -201,8 +197,6 @@ static bool pedirBackground =false;
 {
     
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    //NSString * estado = [prefs objectForKey:@"activaGps"];
-    //if(!estado || (estado && [estado isEqualToString:@"activo"])){
     // We only need to start updating location for iOS 8 -- iOS 7 users should have already
     // started getting location updates
     
@@ -225,76 +219,8 @@ static bool pedirBackground =false;
         [[NSUserDefaults standardUserDefaults] synchronize];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"didChangeAuthorizationStatusOff" object:nil];
     }
-    //[[NSUserDefaults standardUserDefaults] synchronize];
-    //}
 }
-/*
-// Location Manager Delegate Methods
-- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
-{
-    NSLog(@"%@", [locations lastObject]);
-    if([locations count]<=0){
-        return;
-    }
-    CLLocation * newLocation = [locations lastObject];
-    //CLLocationCoordinate2D theLocation = newLocation.coordinate;
-    //CLLocationAccuracy theAccuracy = newLocation.horizontalAccuracy;
-    
-    NSTimeInterval locationAge = -[newLocation.timestamp timeIntervalSinceNow];
-    
-    if (locationAge > 30.0)
-    {
-        return;
-    }
-    [ViewController setLastLocation: [locations lastObject]];
-        
-    //View Area
-    MKCoordinateRegion region = { { 0.0, 0.0 }, { 0.0, 0.0 } };
-    region.center.latitude = [ViewController lastLocation].coordinate.latitude;
-    region.center.longitude = [ViewController lastLocation].coordinate.longitude;
-    region.span.longitudeDelta = 0.005f;
-    region.span.longitudeDelta = 0.005f;
-    [self.mapview setRegion:region animated:YES];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"didUpdateLocations" object:[ViewController lastLocation]];
-    
-    // Schedule location manager to run again in 60 seconds
-    // [manager stopUpdatingLocation];
-    // self.timer = [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(_turnOnLocationManager)  userInfo:nil repeats:NO];
-    
-    
-    //If the timer still valid, it means the 60 seconds are not yet over, and any other
-    // process shouldn’t be started, so return the method here (Will not run the code below)
-    if (self.shareModel.timer)
-    {
-        return;
-    }
-    
-    // start a new background task case app is in background
-    self.shareModel.bgTask = [BackgroundTaskManager sharedBackgroundTaskManager];
-    [self.shareModel.bgTask beginNewBackgroundTask];
-    
-    //Restart the locationMaanger after 1 minute
-    self.shareModel.timer = [NSTimer scheduledTimerWithTimeInterval:60 target:self
-                                                           selector:@selector(restartLocationUpdates)
-                                                           userInfo:nil
-                                                            repeats:NO];
-    
-    //Will only stop the locationManager after 10 seconds, so that we can get some accurate locations
-    //The location manager will only operate for 10 seconds to save battery
-    if (self.shareModel.delay10Seconds)
-    {
-        [self.shareModel.delay10Seconds invalidate];
-        self.shareModel.delay10Seconds = nil;
-    }
-    
-    self.shareModel.delay10Seconds = [NSTimer scheduledTimerWithTimeInterval:10 target:self
-                                                                    selector:@selector(stopLocationDelayBy10Seconds)
-                                                                    userInfo:nil
-                                                                     repeats:NO];
-    
-}
-*/
+
 /*
 - (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation
 {
@@ -302,25 +228,57 @@ static bool pedirBackground =false;
     [self.mapview setRegion:[self.mapview regionThatFits:region] animated:YES];
 }
 */
-- (void)_turnOnLocationManager {
-    [[LocationTracker sharedLocationManager] startUpdatingLocation];
-}
 
-- (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error{
-    
-    if([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied || [CLLocationManager authorizationStatus] == kCLErrorDenied ){
-        //usuario no autorizo
-        //si antes tenia gps, debo quitar el automatico
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"didFailWithError" object:error];
-        
-    } else {
-        UIAlertView *servicesDisabledAlert = [[UIAlertView alloc] initWithTitle:@"Error en Localización" message:@"No se  pudo obtener tu posición." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [servicesDisabledAlert show];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"didUpdateLocations" object:Nil];
+- (void) didFailWithError : (NSNotification *) notification {
+    NSError *error =  (NSError *)[notification object];
+    switch([error code])
+    {
+        case kCLErrorNetwork: // general, network-related error
+        {
+            UIAlertController *alert = [UIAlertController
+                                        alertControllerWithTitle:@"Error en la Red" message:@"Por favor, revisa tu conexión a la red." preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction* yesButton = [UIAlertAction
+                                        actionWithTitle:@"Ok"
+                                        style:UIAlertActionStyleDefault
+                                        handler:^(UIAlertAction * action)
+                                        {
+                                            //Handel your yes please button action here
+                                        }];
+            [alert addAction:yesButton];
+            [self presentViewController:alert animated:YES completion:nil];
+        }
+            break;
+        case kCLErrorDenied:{
+            UIAlertController *alert = [UIAlertController
+                                        alertControllerWithTitle:@"Habilita Servicios de Ubicación" message:@"Debes habilitar los servicios de Ubicación. Para hacerlo dirigete a Ajustes->Privacidad->Localización" preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction* yesButton = [UIAlertAction
+                                        actionWithTitle:@"Ok"
+                                        style:UIAlertActionStyleDefault
+                                        handler:^(UIAlertAction * action)
+                                        {
+                                            //Handel your yes please button action here
+                                        }];
+            [alert addAction:yesButton];
+            [self presentViewController:alert animated:YES completion:nil];
+        }
+            break;
+        default:
+        {
+                UIAlertController *servicesDisabledAlert = [UIAlertController
+                                                            alertControllerWithTitle:@"Error en Localización" message:@"No se  pudo obtener tu posición." preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction* yesButton = [UIAlertAction
+                                            actionWithTitle:@"Ok"
+                                            style:UIAlertActionStyleDefault
+                                            handler:^(UIAlertAction * action)
+                                            {
+                                                //Handel your yes please button action here
+                                            }];
+                [servicesDisabledAlert addAction:yesButton];
+                [self presentViewController:servicesDisabledAlert animated:YES completion:nil];
+        }
+            break;
     }
 }
-
-
 - (void) didUpdateLocations : (NSNotification *) notification {
     CLLocation *location =  (CLLocation *)[notification object];
     NSLog(@"%@",location);
@@ -388,45 +346,6 @@ static bool pedirBackground =false;
 }
 
 
-//Restart the locationManager
-- (void) restartLocationUpdates
-{
-    // Invalidate the timer and set it to nil
-    // because we are restarting the process
-    if (self.shareModel.timer)
-    {
-        [self.shareModel.timer invalidate];
-        self.shareModel.timer = nil;
-    }
-    
-    CLLocationManager *locationManager = [ViewController locationManager];//[LocationTracker sharedLocationManager];
-    locationManager.delegate = self;
-    // any further initialization that you see fit
-    locationManager.distanceFilter = kCLDistanceFilterNone; //whenever we move
-    locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-    locationManager.headingFilter = kCLHeadingFilterNone;
-    
-    // check for iOS 8
-    if(IS_OS_8_OR_LATER)
-    {
-        [locationManager requestAlwaysAuthorization];
-    }
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 9) {
-        locationManager.allowsBackgroundLocationUpdates = YES;
-    }
-    [locationManager startUpdatingLocation];
-}
-
-//Stop the locationManager
--(void)stopLocationDelayBy10Seconds
-{
-    // This method is called by the 10 seconds timer -  "delay10Seconds"
-    // in order to conserve battery life
-    // The location updates will then be stopped
-    // and restarted after 60 seconds by the 60 seconds timer - "timer"
-    CLLocationManager *locationManager = [ViewController locationManager];//[LocationTracker sharedLocationManager];
-    [locationManager stopUpdatingLocation];
-}
 */
 -(void)didChangeAuthorizationStatusOn{
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];

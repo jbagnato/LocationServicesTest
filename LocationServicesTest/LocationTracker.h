@@ -26,6 +26,6 @@
 
 - (void)startLocationTracking;
 - (void)stopLocationTracking;
-- (void)updateLocationToServer;
+//- (void)updateLocationToServer;
 
 @end
