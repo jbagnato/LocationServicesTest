@@ -25,7 +25,9 @@
 + (CLLocationManager *)sharedLocationManager;
 
 - (void)startLocationTracking;
+- (void)startLocationTrackingAndAllowInBackground:(BOOL) inBackground;
 - (void)stopLocationTracking;
 //- (void)updateLocationToServer;
+- (Boolean) areServicesAvailable;
 
 @end

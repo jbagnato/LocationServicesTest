@@ -20,18 +20,15 @@
 - (id)initWithCoder:(NSCoder *)aDecoder {
     
     self = [super initWithCoder:aDecoder];
-    
+    if(self){
+        self.locationTracker = [[LocationTracker alloc]init];
+    }
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
 
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(didChangeAuthorizationStatusOn) name:@"didChangeAuthorizationStatusOn" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(didChangeAuthorizationStatusOff) name:@"didChangeAuthorizationStatusOff" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(didUpdateLocations:) name:@"didUpdateLocations" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -42,20 +39,16 @@
     [self.mapview setZoomEnabled:YES];
     [self.mapview setScrollEnabled:YES];
     
+    if([self.locationTracker areServicesAvailable]){
+        self.lblServiceAvailable.text=@"SI";
+    }else{
+        self.lblServiceAvailable.text=@"NO";
+    }
 }
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
-- (IBAction)askPermissionInUse:(id)sender {
-    [self gpsStartLocating:FALSE];
-}
-
-- (IBAction)askPermissionAlways:(id)sender {
-    [self gpsStartLocating:TRUE];
 }
 
 - (IBAction)localizeOnce:(id)sender {
@@ -69,7 +62,11 @@
     //TODO
 }
 
-- (void)solicitarServicioBackground {
+- (IBAction)stopLocalize:(id)sender {
+    [self gpsStopLocating];
+}
+
+- (void)askService {
     UIAlertController * alert;
     //We have to make sure that the Background App Refresh is enable for the Location updates to work in the background.
     if([[UIApplication sharedApplication] backgroundRefreshStatus] == UIBackgroundRefreshStatusDenied){
@@ -106,8 +103,7 @@
         
     } else{
         
-        self.locationTracker = [[LocationTracker alloc]init];
-        [self.locationTracker startLocationTracking];
+        [self.locationTracker startLocationTrackingAndAllowInBackground:self.switchBackground.isOn];
         
     }
 }
@@ -166,6 +162,7 @@
                                             }];
                 [servicesDisabledAlert addAction:yesButton];
                 [self presentViewController:servicesDisabledAlert animated:YES completion:nil];
+                [self gpsStopLocating];
                 return;
             }
             
@@ -179,7 +176,7 @@
         
     }
     
-    [self solicitarServicioBackground];
+    [self askService];
 }
 
 -(void) gpsStopLocating{
@@ -202,7 +199,7 @@
     
     if (status == kCLAuthorizationStatusAuthorizedAlways ) {
         [prefs setObject:@"activo" forKey:@"activaGpsSiempre"];
-        [self solicitarServicioBackground]; // TODO: ATENCION este metodo se llama multiples veces
+        [self askService]; // ATENCION este metodo se llama multiples veces
     }else if (status == kCLAuthorizationStatusAuthorizedWhenInUse ) {
         [prefs removeObjectForKey:@"activaGpsSiempre"];
     }
@@ -211,13 +208,11 @@
         [manager startUpdatingLocation];
         [prefs setObject:@"activo" forKey:@"activaGps"];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"didChangeAuthorizationStatusOn" object:nil];
     }else if (status == kCLAuthorizationStatusDenied){
-        [manager stopUpdatingLocation];
         [prefs setObject:@"rechazo" forKey:@"activaGpsSiempre"];
         [prefs setObject:@"rechazo" forKey:@"activaGps"];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"didChangeAuthorizationStatusOff" object:nil];
+        [self gpsStopLocating];
     }
 }
 
@@ -230,6 +225,12 @@
 */
 
 - (void) didFailWithError : (NSNotification *) notification {
+    static BOOL alreadyOpen=false;
+    
+    if(alreadyOpen){
+        return;
+    }
+    
     NSError *error =  (NSError *)[notification object];
     switch([error code])
     {
@@ -242,9 +243,10 @@
                                         style:UIAlertActionStyleDefault
                                         handler:^(UIAlertAction * action)
                                         {
-                                            //Handel your yes please button action here
+                                            alreadyOpen=false;
                                         }];
             [alert addAction:yesButton];
+            alreadyOpen=true;
             [self presentViewController:alert animated:YES completion:nil];
         }
             break;
@@ -256,9 +258,10 @@
                                         style:UIAlertActionStyleDefault
                                         handler:^(UIAlertAction * action)
                                         {
-                                            //Handel your yes please button action here
+                                            alreadyOpen=false;
                                         }];
             [alert addAction:yesButton];
+            alreadyOpen=true;
             [self presentViewController:alert animated:YES completion:nil];
         }
             break;
@@ -271,91 +274,43 @@
                                             style:UIAlertActionStyleDefault
                                             handler:^(UIAlertAction * action)
                                             {
-                                                //Handel your yes please button action here
+                                                alreadyOpen=false;
                                             }];
                 [servicesDisabledAlert addAction:yesButton];
+            alreadyOpen=true;
                 [self presentViewController:servicesDisabledAlert animated:YES completion:nil];
         }
             break;
     }
+    [self gpsStopLocating];
+
 }
 - (void) didUpdateLocations : (NSNotification *) notification {
+    static CLLocation *lastLocation;
     CLLocation *location =  (CLLocation *)[notification object];
+    if (location.coordinate.latitude == lastLocation.coordinate.latitude &&
+        location.coordinate.longitude == lastLocation.coordinate.longitude) {
+        return;
+    }
     NSLog(@"%@",location);
+    lastLocation=location;
+    self.lblPosition.text=[NSString stringWithFormat:@"%.8f %.8f",location.coordinate.latitude,location.coordinate.longitude];
     MKCoordinateRegion region = { { 0.0, 0.0 }, { 0.0, 0.0 } };
     region.center.latitude = location.coordinate.latitude;
     region.center.longitude = location.coordinate.longitude;
     region.span.longitudeDelta = 0.005f;
     region.span.longitudeDelta = 0.005f;
     [self.mapview setRegion:region animated:YES];
+    
+    // Add an annotation
+    MKPointAnnotation *point = [[MKPointAnnotation alloc] init];
+    point.coordinate = location.coordinate;
+    point.title = @"Posicion";
+    point.subtitle = @"detectada";
+    
+    [self.mapview addAnnotation:point];
 }
 
-/*
-// This Method will be called as soon as the app goes into the background
-// (Which is done through the "[NSNotificationCenter defaultCenter] addObserver" method with the key
-// "UIApplicationDidEnterBackgroundNotification
-//" in the "name" parameter, should be implemented in the init method).
--(void)applicationEnterBackground
-{
-    CLLocationManager *locationManager = [ViewController locationManager];//[LocationTracker sharedLocationManager];
-    //revisar si user esta en modo viaje o no!
-    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    NSNumber* modoViaje = [prefs objectForKey:@"modoViaje"];
-    if(!modoViaje || [modoViaje intValue]<=0){
-        //frenar timers
-        if (self.shareModel.timer)
-        {
-            [self.shareModel.timer invalidate];
-            self.shareModel.timer = nil;
-        }
-        if (self.timer)
-        {
-            [self.timer invalidate];
-            self.timer = nil;
-        }
-        [locationManager stopUpdatingLocation];
-        return;
-    }
-    
-    if(pedirBackground){ //para que no entre multiples veces
-        return;
-    }
-    pedirBackground=true;
-    
-    locationManager.delegate = self;
-    // Any other initializations you see fit
-    locationManager.distanceFilter = kCLDistanceFilterNone; //whenever we move
-    locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-    locationManager.headingFilter = kCLHeadingFilterNone;
-    
-    // check for iOS 8
-    if(IS_OS_8_OR_LATER)
-    {
-        [locationManager requestAlwaysAuthorization];
-    }
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 9) {
-        locationManager.allowsBackgroundLocationUpdates = YES;
-    }
-    
-    [locationManager startUpdatingLocation];
-    
-    //Use the BackgroundTaskManager to manage all the background Task
-    self.shareModel.bgTask = [BackgroundTaskManager sharedBackgroundTaskManager];
-    // Begin a new background task.
-    [self.shareModel.bgTask beginNewBackgroundTask];
-}
-
-
-*/
--(void)didChangeAuthorizationStatusOn{
-    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    [prefs setObject:@"activo" forKey:@"activaGps"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-}
-
--(void)didChangeAuthorizationStatusOff{
-    [self gpsStopLocating];
-}
 
 
 

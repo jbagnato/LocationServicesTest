@@ -17,14 +17,15 @@
 
 @property (strong,nonatomic) LocationTracker * locationTracker;
 
+@property (weak, nonatomic) IBOutlet UISwitch *switchBackground;
 
 @property (weak, nonatomic) IBOutlet UILabel *lblServiceAvailable;
-- (IBAction)askPermissionInUse:(id)sender;
-- (IBAction)askPermissionAlways:(id)sender;
 - (IBAction)localizeOnce:(id)sender;
 - (IBAction)localizeAllTime:(id)sender;
 @property (weak, nonatomic) IBOutlet MKMapView *mapview;
 - (IBAction)gotoWeb:(id)sender;
+- (IBAction)stopLocalize:(id)sender;
+@property (weak, nonatomic) IBOutlet UILabel *lblPosition;
 
 @end
 

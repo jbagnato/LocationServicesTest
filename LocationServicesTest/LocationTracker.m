@@ -15,7 +15,8 @@
 
 
 @implementation LocationTracker
-static bool pedirBackground =false;
+static bool backgroundFlag =false;
+static bool useInBackground =false;
 
 + (CLLocationManager *)sharedLocationManager {
     static CLLocationManager *_locationManager;
@@ -36,7 +37,8 @@ static bool pedirBackground =false;
         self.shareModel = [LocationShareModel sharedModel];
         self.shareModel.myLocationArray = [[NSMutableArray alloc]init];
         
-        pedirBackground=false;
+        backgroundFlag=false;
+        useInBackground=false;
         @try {
             [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:Nil];
         } @catch (NSException *__unused exception) {}
@@ -45,10 +47,18 @@ static bool pedirBackground =false;
     return self;
 }
 
-
+- (Boolean) areServicesAvailable{
+    return [CLLocationManager locationServicesEnabled];
+}
 - (void)startLocationTracking
 {
+    [self startLocationTrackingAndAllowInBackground:NO];
+}
+
+- (void)startLocationTrackingAndAllowInBackground:(BOOL) inBackground
+{
     NSLog(@"startLocationTracking");
+    useInBackground = inBackground;
     
     if ([CLLocationManager locationServicesEnabled] == NO) {
         NSLog(@"locationServicesEnabled false");
@@ -139,10 +149,15 @@ static bool pedirBackground =false;
 //" in the "name" parameter, should be implemented in the init method).
 -(void)applicationEnterBackground
 {
-    if(pedirBackground){ //para que no entre multiples veces
+    if(!useInBackground){
+        //frenar timers
+        [self stopLocationTracking];
         return;
     }
-    pedirBackground=true;
+    if(backgroundFlag){ //para que no entre multiples veces
+        return;
+    }
+    backgroundFlag=true;
 
     CLLocationManager *locationManager = [LocationTracker sharedLocationManager];
     locationManager.delegate = self;
