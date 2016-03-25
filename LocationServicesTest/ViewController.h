@@ -16,6 +16,7 @@
 }
 
 @property (strong,nonatomic) LocationTracker * locationTracker;
+@property (strong,nonatomic) MKPointAnnotation *point;
 
 @property (weak, nonatomic) IBOutlet UISwitch *switchBackground;
 

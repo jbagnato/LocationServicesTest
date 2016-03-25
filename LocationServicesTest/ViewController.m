@@ -22,6 +22,7 @@
     self = [super initWithCoder:aDecoder];
     if(self){
         self.locationTracker = [[LocationTracker alloc]init];
+        self.point = [[MKPointAnnotation alloc] init];
     }
     return self;
 }
@@ -303,12 +304,11 @@
     [self.mapview setRegion:region animated:YES];
     
     // Add an annotation
-    MKPointAnnotation *point = [[MKPointAnnotation alloc] init];
-    point.coordinate = location.coordinate;
-    point.title = @"Posicion";
-    point.subtitle = @"detectada";
+    self.point.coordinate = location.coordinate;
+    self.point.title = @"Posicion";
+    self.point.subtitle = @"detectada";
     
-    [self.mapview addAnnotation:point];
+    [self.mapview addAnnotation:self.point];
 }
 
 
