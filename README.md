@@ -6,11 +6,11 @@ El articulo completo se encuentra en http://www.na8.com.ar/news/2016/03/25/guia-
 ![Ejemplo de localizacion en ios 9](http://www.na8.com.ar/news/wp-content/uploads/2016/03/location-services-ios9-350x245.jpg)
 
 # Contenido
-Solicitud de permisos In use / Always
-Solicitud de uso en Background (segundo plano)
-Solicitud de Posicion
-Validacion de permisos
-Usa MapKit para ubicar la posicion en mapa
-Funciona en Background
-Para ahorrar batería utiliza ráfagas de 10 segundos y frena por 50 segundos
+- Solicitud de permisos In use / Always
+- Solicitud de uso en Background (segundo plano)
+- Solicitud de Posicion
+- Validacion de permisos
+- Usa MapKit para ubicar la posicion en mapa
+- Funciona en Background
+- Para ahorrar batería utiliza ráfagas de 10 segundos y frena por 50 segundos
 
